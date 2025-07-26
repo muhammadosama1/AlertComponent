@@ -27,11 +27,11 @@ import SwiftUI
 ///   - Footer: The type of the footer view, typically containing action buttons.
 ///   - InfoSection: The type of the info section view, for additional context (e.g., timer, disclaimer).
 public struct AlertView<Footer: View, InfoSection: View>: View {
-    private let alertTitle: String
-    private let alertMessage: String
-    private let alertType: AlertType
-    private let alertInfoSection: InfoSection
-    private let alertFooter: Footer
+    private let title: String
+    private let message: String
+    private let type: AlertType
+    private let infoSection: InfoSection
+    private let footer: Footer
     
     /// Controls whether a border is shown around the alert, from the environment.
     @Environment(\.showBorder) var showBorder: Bool
@@ -51,11 +51,11 @@ public struct AlertView<Footer: View, InfoSection: View>: View {
         @AlertInfoSectionBuilder infoSection: () -> InfoSection,
         @ViewBuilder footer: @escaping () -> Footer
     ) {
-        self.alertTitle = title
-        self.alertMessage = message
-        self.alertType = alertType
-        self.alertInfoSection = infoSection()
-        self.alertFooter = footer()
+        self.title = title
+        self.message = message
+        self.type = alertType
+        self.infoSection = infoSection()
+        self.footer = footer()
     }
     
     /// Creates a new alert view.
@@ -71,11 +71,11 @@ public struct AlertView<Footer: View, InfoSection: View>: View {
         alertType: AlertType,
         @ViewBuilder footer: @escaping () -> Footer
     ) where InfoSection == EmptyView {
-        self.alertTitle = title
-        self.alertMessage = message
-        self.alertType = alertType
-        self.alertInfoSection = EmptyView()
-        self.alertFooter = footer()
+        self.title = title
+        self.message = message
+        self.type = alertType
+        self.infoSection = EmptyView()
+        self.footer = footer()
     }
 }
 
@@ -87,44 +87,44 @@ extension AlertView {
         ) {
             headingView
             
-            Text(alertMessage)
+            Text(message)
                 .font(.subheadline)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            alertInfoSection
+            infoSection
                 .padding(.top, 10)
             
-            alertFooter
+            footer
                 .padding(.top, 20)
         }
         .padding()
-        .background(alertType.backgroundColor)
+        .background(type.backgroundColor)
         .cornerRadius(12)
         .shadow(radius: 4)
         .overlay(
             RoundedRectangle(cornerRadius: 12)
                 .stroke(
-                    alertType.tintColor,
+                    type.tintColor,
                     lineWidth: showBorder ? 1 : 0
                 )
         )
         .padding(.horizontal, 20)
         // Accessibility
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(alertType.rawValue) alert: \(alertTitle). \(alertMessage)")
+        .accessibilityLabel("\(type.rawValue) alert: \(title). \(message)")
         .accessibilityAddTraits(.isModal)
-        .accessibilityHint(alertType.accessibilityHint)
+        .accessibilityHint(type.accessibilityHint)
     }
     
     /// The heading view, displaying the alert icon and title.
     var headingView: some View {
         HStack {
             Image(
-                systemName: alertType.iconName
+                systemName: type.iconName
             )
-            .foregroundStyle(alertType.tintColor)
+            .foregroundStyle(type.tintColor)
             
-            Text(alertTitle)
+            Text(title)
                 .font(.headline)
                 .fontWeight(.bold)
                 .accessibilityAddTraits(.isHeader)
