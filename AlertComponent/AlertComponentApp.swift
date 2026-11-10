@@ -14,7 +14,7 @@ struct AlertComponentApp: App {
             AlertView(
                 title: "Title",
                 message: "Description Message",
-                alertType: .info
+                type: .info
             ) {
                 VStack {
                     VStack {

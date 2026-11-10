@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// Represents the type of alert to display, determining its color, icon, and accessibility hint.
+/// Represents the type of alert to display, determining its color and icon.
 public enum AlertType: String {
     /// A success alert, typically used for positive feedback.
     case success
@@ -33,20 +33,6 @@ public enum AlertType: String {
         tintColor.opacity(0.1)
     }
 
-    /// An accessibility hint describing the alert type for assistive technologies.
-    var accessibilityHint: String {
-        switch self {
-        case .info:
-            return "This is an informational message"
-        case .success:
-            return "This is a success message"
-        case .warning:
-            return "This is a warning message"
-        case .error:
-            return "This is an error message"
-        }
-    }
-    
     /// The name of the SF Symbol icon representing the alert type.
     var iconName: String {
         switch self {

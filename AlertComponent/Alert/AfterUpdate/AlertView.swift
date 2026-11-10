@@ -17,7 +17,7 @@ import SwiftUI
 /// AlertView(
 ///     title: "Update Available",
 ///     message: "A new version is ready to install",
-///     alertType: .info,
+///     type: .info,
 ///     infoSection: { /* Optional info section */ },
 ///     footer: { /* Action buttons */ }
 /// )
@@ -41,19 +41,19 @@ public struct AlertView<Footer: View, InfoSection: View>: View {
     /// - Parameters:
     ///   - title: The title text for the alert.
     ///   - message: The message text for the alert.
-    ///   - alertType: The type of alert (success, warning, error, info).
+    ///   - type: The type of alert (success, warning, error, info).
     ///   - infoSection: A closure returning the info section view (optional).
     ///   - footer: A closure returning the footer view (typically action buttons).
     public init(
         title: String,
         message: String,
-        alertType: AlertType,
+        type: AlertType,
         @AlertInfoSectionBuilder infoSection: () -> InfoSection,
         @ViewBuilder footer: @escaping () -> Footer
     ) {
         self.title = title
         self.message = message
-        self.type = alertType
+        self.type = type
         self.infoSection = infoSection()
         self.footer = footer()
     }
@@ -63,17 +63,17 @@ public struct AlertView<Footer: View, InfoSection: View>: View {
     /// - Parameters:
     ///   - title: The title text for the alert.
     ///   - message: The message text for the alert.
-    ///   - alertType: The type of alert (success, warning, error, info).
+    ///   - type: The type of alert (success, warning, error, info).
     ///   - footer: A closure returning the footer view (typically action buttons).
     public init(
         title: String,
         message: String,
-        alertType: AlertType,
+        type: AlertType,
         @ViewBuilder footer: @escaping () -> Footer
     ) where InfoSection == EmptyView {
         self.title = title
         self.message = message
-        self.type = alertType
+        self.type = type
         self.infoSection = EmptyView()
         self.footer = footer()
     }
@@ -109,11 +109,6 @@ extension AlertView {
                 )
         )
         .padding(.horizontal, 20)
-        // Accessibility
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(type.rawValue) alert: \(title). \(message)")
-        .accessibilityAddTraits(.isModal)
-        .accessibilityHint(type.accessibilityHint)
     }
     
     /// The heading view, displaying the alert icon and title.
@@ -123,10 +118,12 @@ extension AlertView {
                 systemName: type.iconName
             )
             .foregroundStyle(type.tintColor)
+            .accessibilityHidden(true)
             
             Text(title)
                 .font(.headline)
                 .fontWeight(.bold)
+                .accessibilityLabel("\(type.rawValue.capitalized) alert: \(title)")
                 .accessibilityAddTraits(.isHeader)
         }
     }
@@ -139,7 +136,7 @@ extension AlertView {
     AlertView(
         title: "Update Available",
         message: "A new version is ready to install",
-        alertType: .info,
+        type: .info,
         infoSection: {
             // No info section for this preview
         },
@@ -162,9 +159,9 @@ extension AlertView {
     AlertView(
         title: "Delete Account",
         message: "Are you sure you want to delete your account? This action cannot be undone.",
-        alertType: .error,
+        type: .error,
         infoSection: {
-            
+            TimerView(targetDate: .now + 100)
         },
         footer: {
             HStack {
@@ -175,7 +172,6 @@ extension AlertView {
                 Button(type: .secondary, title: "Cancel") {
                     // Handle cancel action
                 }
-                .destructive()
             }
         }
     )
@@ -186,7 +182,7 @@ extension AlertView {
     AlertView(
         title: "Data Usage Warning",
         message: "This action will download a large amount of content and may consume significant mobile data. Please ensure you have sufficient data allowance before proceeding.",
-        alertType: .warning,
+        type: .warning,
         infoSection: {
             Text("Data charges may apply based on your carrier plan. We recommend connecting to Wi-Fi to avoid additional costs. Large downloads may take several minutes to complete.")
         },
@@ -211,7 +207,7 @@ extension AlertView {
     AlertView(
         title: "Premium Feature Access",
         message: "This advanced analytics feature requires a premium subscription to access. You can try it now during your free trial period or upgrade to continue using it after the trial expires.",
-        alertType: .info,
+        type: .info,
         infoSection: {
             Text("Premium features include advanced reporting, data export capabilities, and priority support. Your trial includes full access to all premium features with no limitations.")
             

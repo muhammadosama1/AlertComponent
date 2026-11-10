@@ -48,6 +48,9 @@ public struct TimerView: View {
                     remainingSeconds = seconds
                 }
             }
+            .onChange(of: targetDate) { _, newDate in
+                remainingSeconds = max(Int(newDate.timeIntervalSinceNow), 0)
+            }
     }
     
     private var timeString: String {
